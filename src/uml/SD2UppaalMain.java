@@ -39,11 +39,7 @@ public class SD2UppaalMain {
 	{
 		//所有图
 		ArrayList<WJDiagramsData> DiagramsDataList = new ArrayList<WJDiagramsData>();
-		ArrayList<WJLifeline> AllLifeLines=new ArrayList<WJLifeline>();//
-		ArrayList<WJMessage> AllMessages=new ArrayList<WJMessage>();
-		ArrayList<WJFragment> AllFragments=new ArrayList<WJFragment>();
-		
-		
+	 
 		//这个图的lifelines 和其他
 		ArrayList<WJLifeline> lifeLines=new ArrayList<WJLifeline>();//
 		ArrayList<WJMessage> messages=new ArrayList<WJMessage>();
@@ -61,15 +57,13 @@ public class SD2UppaalMain {
 	    Read uml=new Read();
 	    uml.load(root);
 	    
-	    AllLifeLines=uml.getUmlLifeLines();
-	    AllMessages=uml.getUmlMessageFinal();
-	    AllFragments=uml.getUmlFragment();
-	    //得到所有图对应的id
+
+	    //得到所有图对应的所有数据
 	    DiagramsDataList = uml.getUmlAllDiagramData();
 	    
 	
 	    
-	    //V1.4 增加新遍历图DiagramsDataList
+	    // 遍历图DiagramsDataList
 	    Iterator<WJDiagramsData> DiagramsDataListIterator = DiagramsDataList.iterator();   
 	    while(DiagramsDataListIterator.hasNext())
 	    {  
@@ -80,7 +74,7 @@ public class SD2UppaalMain {
 	    	System.out.println("***************************************");
 		    System.out.println("正在处理图名为:"+diagramDaraI.name);
 		    
-		    //清除数据
+		    //初始化
 		    lifeLines.clear();
 		    messages.clear();
 		    fragments.clear();
@@ -89,7 +83,8 @@ public class SD2UppaalMain {
 		    lifeLines = diagramDaraI.getLifelineArray();
 		    fragments = diagramDaraI.getFragmentArray();
 		    messages = diagramDaraI.getMessageArray();
-		    //将fragment放入hashmap  ：：这个图
+		    
+		    //id——fragment hashmap
 	    	id_fragment.clear();
 	   	    Iterator<WJFragment> fragmentsIterator = fragments.iterator();
 		    while(fragmentsIterator.hasNext())
@@ -105,7 +100,12 @@ public class SD2UppaalMain {
 		    WJFragment y = new WJFragment();
 		    id_fragment.put("nothing", y);
 
-		    
+		    Iterator<WJLifeline> lifelinesIterator = lifeLines.iterator();
+		    while(lifelinesIterator.hasNext())//生命线遍历
+		    {
+		    	
+		    	//第I个生命线
+		    	WJLifeline lifelineI = (WJLifeline)lifelinesIterator.next();
 		    	UppaalTemPlate template=new UppaalTemPlate();
 		    	messageList.clear();//清空数据
 		    	fragmentList.clear();
@@ -145,7 +145,7 @@ public class SD2UppaalMain {
 				    location0.setInit(true);
 				    location0.setObjId(messages.get(0).getFromId());
 			    
-				    Iterator<WJLifeline> lifelineIteratorForName = AllLifeLines.iterator();
+				    Iterator<WJLifeline> lifelineIteratorForName = lifeLines.iterator();
 				    while(lifelineIteratorForName.hasNext())
 				    {//遍历所有lifeline确定id对应的名称
 				    	WJLifeline lifeline = lifelineIteratorForName.next();
@@ -168,10 +168,12 @@ public class SD2UppaalMain {
 			    	while(messageIterator.hasNext())//遍历message  建location  建表
 			    	{
 
+			    		WJMessage messageI = messageIterator.next();//对象
 			    		
-		    				WJMessage messageI = messageIterator.next();//1toN	
-			    		
-			    		
+			    		String receiveOrSend = "";
+			    		if(messageI.getFromId().substring(13).equals(lifelineI.getlifeLineId().substring(13)))//是发送方
+			    		{
+			    			receiveOrSend = "!";
 			    			I++;
 				    		messageList.add(messageI);									//建表 表示这个生命线的所有message
 				    		fragmentList.add(id_fragment.get(messageI.getInFragId()));	//表示这个生命线的所有fragment
@@ -187,17 +189,6 @@ public class SD2UppaalMain {
 			    			location.setR1(messageI.getR1());
 		    				location.setR2(messageI.getR2()); 
 		    				location.setEnerge(messageI.getEnerge());
-		    				location.setObjId(messageI.getToId());
-						    Iterator<WJLifeline> lifelineIteratorForName2 = AllLifeLines.iterator();
-						    while(lifelineIteratorForName2.hasNext())
-						    {//遍历所有lifeline确定id对应的名称
-						    	WJLifeline lifeline = lifelineIteratorForName2.next();
-						    	
-						    	if (location.getObjId().substring(13).equals(lifeline.getlifeLineId().substring(13))) {
-									location.setObjName(lifeline.getlifeLineName());
-								}	
-						    }
-//warning在这里添加messageI的信息到location中
 			        		template.locations.add(location);
 			        		locationList.add(location);   
 			        		
@@ -220,9 +211,55 @@ public class SD2UppaalMain {
 			        			}
 			        			
 			        		}	
-		    		
+			    		}
 			    		
-			    		        				    	    		    	    		
+			    			
+			    		
+		        		
+			    		if(messageI.getToId().substring(13).equals(lifelineI.getlifeLineId().substring(13)))//是接受方
+			    		{	
+			    			receiveOrSend = "?";
+			    			I++;
+				    		messageList.add(messageI);									//建表 表示这个生命线的所有message
+				    		fragmentList.add(id_fragment.get(messageI.getInFragId()));	//表示这个生命线的所有fragment
+				    		WJFragment sa=id_fragment.get(messageI.getInFragId());
+				    		ArrayList <WJFragment> tableI = setTableI(sa);//建立table
+				    		
+				    		table.add(I, tableI);
+				    		
+					    	
+					    	
+		//添加location
+			    			UppaalLocation location = setLocation(q_id,"q"+q_id++);
+			    			location.setR1(messageI.getR1());
+		    				location.setR2(messageI.getR2()); 
+		    				location.setEnerge(messageI.getEnerge());
+			        		template.locations.add(location);
+			        		locationList.add(location);   
+			        		
+			        		// 对alt交接处的处理	        		 标记map
+			        		if(I != 0 && hasAlt(table.get(I-1))&&hasAlt(table.get(I)))//两个都有alt   不能添加alt中的交接处
+			        		{
+			        			int thelength = table.get(I).size()<table.get(I-1).size()? table.get(I).size():table.get(I-1).size();
+			        			//不同于break的算法 ，alt只需要看短的一个就可以了
+			        			for(int c =0;c<thelength;c++)
+			        			{
+			        				if(table.get(I-1).get(c).getFragType() .equals ("alt")&&
+			        						table.get(I).get(c).getFragType() .equals ("alt")&&
+			        					!table.get(I-1).get(c).getFragId() .equals (table.get(I).get(c).getFragId())&&
+			        						table.get(I-1).get(c).getComId().equals(table.get(I).get(c).getComId())
+			        						)//同一个alt中的不同操作域
+			        				{	        					
+			        					map[I-1][I] = -1; //无论如何 这个不能添加
+			        					break;
+			        				}
+			        			}
+			        			
+			        		}			
+			    		}
+		    		
+			    		if(receiveOrSend.equals(""))//筛选属于他的消息 不属于则跳过这个继续
+			    			continue;   				    	    		    	    		
 		    	    		
 		        		
 	
@@ -483,11 +520,16 @@ public class SD2UppaalMain {
 							
 							if(messageI.getReceiveAndSend().equals("null"))//处理自己到自己的消息造成的2个重复的transition 改为一个！一个？
 							{	
-						    		
-								if(messageI.getFromId().substring(13).equals(messageI.getToId().substring(13)))
+								if(messageI.getFromId().substring(13).equals(lifelineI.getlifeLineId().substring(13)))
 					    		{	
-					    			receiveOrSend+="!?";
-					    		}		
+					    			receiveOrSend+="!";
+					    		}
+					    		
+					    		if(messageI.getToId().substring(13).equals(lifelineI.getlifeLineId().substring(13)))
+					    		{	
+					    			receiveOrSend+="?";
+				    			}	
+										
 							
 					    		if(receiveOrSend.equals("!?") && j < messageList.size())
 					    		{
@@ -539,7 +581,7 @@ public class SD2UppaalMain {
 			    template_names.add("template_");
 			    //+lifelineI.getlifeLineName());
 			    templates.add(template);  
-  
+		    }
 		    System.out.println("***************************************");
 		    System.out.println("正在写入图名为"+diagramDaraI.name+"的xml");
 		    Write.creatXML(diagramDaraI.name+".xml",templates,template_names);
