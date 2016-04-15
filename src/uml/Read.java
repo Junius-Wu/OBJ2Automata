@@ -189,7 +189,18 @@ public class Read
 		for(Iterator<Element> fragListIterator=EAfragmentList.iterator();fragListIterator.hasNext();)//遍历所有fragment
 		{
 			Element fragment=fragListIterator.next();
-			
+			if(fragment.attribute("type").getValue().equals("uml:OccurrenceSpecification"))
+			{	
+				String sourceID = fragment.attribute("id").getValue();
+				fragment = fragListIterator.next();
+				String targetID = fragment.attribute("id").getValue();		
+				//通过sourceID和targetID找到对应的messageID
+				String lastMessageID = MessageIDByKeyWithSourceIDAndTargetID.get(sourceID+targetID);
+				//设置lastMessageID对应于DiagramID
+				lastMessageIDByKeyWithDiagramID.put(findDiagramIDByChildID(lastMessageID), lastMessageID);
+					
+				
+			}
 			if (fragment.attribute("type").getValue().equals("uml:InteractionUse")) {//最外层如果是一个ref
 				REF ref = new REF();
 				ref.setRefID(fragment.attributeValue("id"));
@@ -342,9 +353,17 @@ public class Read
 							}
 							if(child_fragsI.attribute("type").getValue().equals("uml:OccurrenceSpecification"))
 							{	
-								sID.add(child_fragsI.attribute("id").getValue());
+								String sourceID = child_fragsI.attribute("id").getValue();
+								sID.add(sourceID);
 								child_fragsI = alfragsIterator.next();
-								tID.add(child_fragsI.attribute("id").getValue());
+								String targetID = child_fragsI.attribute("id").getValue();
+								tID.add(targetID);
+								
+								//通过sourceID和targetID找到对应的messageID
+								String lastMessageID = MessageIDByKeyWithSourceIDAndTargetID.get(sourceID+targetID);
+								//设置lastMessageID对应于DiagramID
+								lastMessageIDByKeyWithDiagramID.put(findDiagramIDByChildID(lastMessageID), lastMessageID);
+									
 								
  							}
 							else if(child_fragsI.attribute("type").getValue().equals("uml:CombinedFragment"))
@@ -458,6 +477,7 @@ public class Read
 			}
 		}
 		
+		//图的连接
 		
 		//对ref进行处理 合并子图到父图
 		for(WJDiagramsData diagramData : umlAllDiagramData) {
@@ -493,11 +513,11 @@ public class Read
 		//修改最外层的fragment 复制一份到父图中
 		ArrayList<WJFragment> copyFragmentArray = new ArrayList<>();
 		for(WJFragment fragment : childDiagram.getFragmentArray()) {//添加所有的组合片段
+			WJFragment copyFragment = (WJFragment) fragment.clone();
 			if (fragment.BigId.equals("null")) {//最外面层的sd
-				WJFragment copyFragment = (WJFragment) fragment.clone();
-				copyFragment.setBigId(ref.getInFragID());
-				copyFragmentArray.add(copyFragment);
-			}		
+				copyFragment.setBigId(ref.getInFragID());	
+			}
+			copyFragmentArray.add(copyFragment);	
 		}
 		diagramData.getFragmentArray().addAll(copyFragmentArray);
 		

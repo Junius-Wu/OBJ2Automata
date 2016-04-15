@@ -51,7 +51,7 @@ public class SD2UppaalMain {
 		
 		
 		SAXReader reader=new SAXReader();//获取解析器
-	    Document dom= reader.read("EAtest.xml");//解析XML获取代表整个文档的dom对象
+	    Document dom= reader.read("test.xml");//解析XML获取代表整个文档的dom对象
 	    Element root=dom.getRootElement();//获取根节点
 	    
 	    Read uml=new Read();
