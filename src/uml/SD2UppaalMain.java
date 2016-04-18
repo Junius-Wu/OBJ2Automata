@@ -104,9 +104,11 @@ public class SD2UppaalMain {
 		    while(lifelinesIterator.hasNext())//生命线遍历
 		    {
 		    	
+		    	
 		    	//第I个生命线
 		    	WJLifeline lifelineI = (WJLifeline)lifelinesIterator.next();
 		    	UppaalTemPlate template=new UppaalTemPlate();
+		    	System.out.println("对象名：" + lifelineI.getlifeLineName());
 		    	messageList.clear();//清空数据
 		    	fragmentList.clear();
 		    	table.clear();
@@ -146,13 +148,7 @@ public class SD2UppaalMain {
 				    location0.setObjId(messages.get(0).getFromId());
 			    
 				    Iterator<WJLifeline> lifelineIteratorForName = lifeLines.iterator();
-				    while(lifelineIteratorForName.hasNext())
-				    {//遍历所有lifeline确定id对应的名称
-				    	WJLifeline lifeline = lifelineIteratorForName.next();
-				    	if (location0.getObjId().substring(13).equals(lifeline.getlifeLineId().substring(13))) {
-							location0.setObjName(lifeline.getlifeLineName());
-						}
-				    }
+				    
  
 				    template.locations.add(location0);	
 				    locationList.add(location0);
@@ -576,10 +572,10 @@ public class SD2UppaalMain {
 			    
 			    }//message
 			    
-			    template.setName("template_");
-			    //+lifelineI.getlifeLineName());
-			    template_names.add("template_");
-			    //+lifelineI.getlifeLineName());
+			    template.setName("template_"
+			    +lifelineI.getlifeLineName());
+			    template_names.add("template_"
+			    +lifelineI.getlifeLineName());
 			    templates.add(template);  
 		    }
 		    System.out.println("***************************************");
