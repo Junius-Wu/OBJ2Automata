@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class WJDiagramsData {
 
-	ArrayList <String> ids ;
+	ArrayList <String> ids = new ArrayList<String>();
 	ArrayList <WJLifeline> lifelineArray = new ArrayList <WJLifeline>();
 	ArrayList <WJFragment> fragmentArray = new ArrayList <WJFragment>();
 	ArrayList <WJMessage> messageArray = new ArrayList <WJMessage>();
@@ -12,7 +12,14 @@ public class WJDiagramsData {
 	String diagramID;
 	String name;
 	int RefEndTo;
+	int displayCount = 0;
 	
+	public int getDisplayCount() {
+		return displayCount;
+	}
+	public void setDisplayCount(int displayCount) {
+		this.displayCount = displayCount;
+	}
 	public ArrayList<String> getIds() {
 		return ids;
 	}
