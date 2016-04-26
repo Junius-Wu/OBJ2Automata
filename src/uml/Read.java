@@ -19,7 +19,7 @@ public class Read
 	ArrayList<WJMessage> umlMessageFinal=new ArrayList<WJMessage>();
 	ArrayList<WJDiagramsData> umlAllDiagramData = new ArrayList<WJDiagramsData>();
 	ArrayList<REF> umlREF = new ArrayList<REF>();
-	
+	ArrayList<WJDiagramsData> displayDiagrams = new ArrayList<WJDiagramsData>();//展示用的图
 	HashMap<String , String> findAltsFather = new HashMap<String , String>();
 	public boolean hasNoLifeline()
 	{	
@@ -484,7 +484,7 @@ public class Read
 			DFSDiagramByREF(diagramData);
 		}
 		
-		
+		umlAllDiagramData.addAll(displayDiagrams);
 		
 	}
 /*method-----------------------------------------------------------*/	
@@ -553,7 +553,22 @@ public class Read
 				}
 			}
 		}
-		
+		//添加要展示的图  复制diagramData
+		WJDiagramsData displaySD = new WJDiagramsData();
+		displaySD.diagramID = diagramData.diagramID + "-----display" + diagramData.displayCount;
+		displaySD.name = diagramData.name + "-----display" + diagramData.displayCount;
+		displaySD.fragmentArray.addAll(diagramData.fragmentArray);
+		displaySD.lifelineArray.addAll(diagramData.lifelineArray);
+		displaySD.messageArray.addAll(diagramData.messageArray);
+		displaySD.ids.addAll(diagramData.ids);
+		displaySD.refArray.addAll(diagramData.refArray);
+		displaySD.RefEndTo = diagramData.RefEndTo;
+		diagramData.displayCount++;
+		//去掉refendto之后的消息
+		while(displaySD.messageArray.size() > displaySD.RefEndTo) {
+			displaySD.messageArray.remove(displaySD.RefEndTo);
+		}
+		displayDiagrams.add(displaySD);
 		
 
 	}
@@ -586,21 +601,25 @@ public class Read
 	//message设定5种时间约束
 	private void setMessageTimeDurations(WJMessage message, String styleValue) {
 		if (styleValue == null) return;
-		String[] strArray = styleValue.split(";");
-		for (int i = 0; i < strArray.length; i++) {
-			String[] nameAndValue = strArray[i].split("=");
-			if (nameAndValue[0].equals("SEQDC")) {
-				message.setSEQDC(nameAndValue[1]);
-			} else if (nameAndValue[0].equals("SEQDO")){
-				message.setSEQDO(nameAndValue[1]);
-			} else if (nameAndValue[0].equals("SEQTC")){
-				message.setSEQTC(nameAndValue[1]);
-			} else if (nameAndValue[0].equals("SEQTO")){
-				message.setSEQTO(nameAndValue[1]);
-			} else if (nameAndValue[0].equals("DCBM")){
-				message.setDCBM(nameAndValue[1]);
-			}
-		}
+//		String[] strArray = styleValue.split(";");
+//		for (int i = 0; i < strArray.length; i++) {
+//			String[] nameAndValue = strArray[i].split("=");
+//			if (nameAndValue[0].equals("SEQDC")) {
+//				message.setSEQDC(nameAndValue[1]);
+//			} else if (nameAndValue[0].equals("SEQDO")){
+//				message.setSEQDO(nameAndValue[1]);
+//			} else if (nameAndValue[0].equals("SEQTC")){
+//				message.setSEQTC(nameAndValue[1]);
+//			} else if (nameAndValue[0].equals("SEQTO")){
+//				message.setSEQTO(nameAndValue[1]);
+//			} else if (nameAndValue[0].equals("DCBM")){
+//				message.setDCBM(nameAndValue[1]);
+//			}
+//		}
+		String[] str1 = styleValue.split("DCBM=");
+		String[] str2 = str1[1].split("SEQDO=");
+		message.setSEQDO(str2[1]);
+		message.setDCBM(str2[0]);
 		
 	}
 

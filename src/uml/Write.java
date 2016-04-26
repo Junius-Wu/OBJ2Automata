@@ -41,14 +41,14 @@ public class Write
 		    nameElement.addAttribute("y",yy );
 		    nameElement.setText(temlPlate.getName());
 		    tem.addElement("declaration");
-		    int inittemp=-1;
+		    String  inittemp = "";
 		    Iterator<UppaalLocation> locationIterator=temlPlate.locations.iterator();
 		    Iterator<UppaalTransition> transitonIterator=temlPlate.transitions.iterator();
 		    while(locationIterator.hasNext())
 		    {
 		    	UppaalLocation location=locationIterator.next();
 		    	Element loc =tem.addElement("location");
-		    	loc.addAttribute("id","id"+location.getId());
+		    	loc.addAttribute("id","loc_id"+location.getId());
 		    	loc.addAttribute("x", xx);
 		    	loc.addAttribute("y",yy);
 		    	loc.addAttribute("R1", location.getR1());
@@ -85,8 +85,9 @@ public class Write
 		    { 
 		    	UppaalTransition transition=transitonIterator.next();
 		    	Element tran=tem.addElement("transition");
-		    	tran.addElement("source").addAttribute("ref","id"+transition.getSourceId());
-		    	tran.addElement("target").addAttribute("ref","id"+transition.getTargetId());
+		    	tran.addElement("source").addAttribute("ref","loc_id"+transition.getSourceId());
+		    	tran.addElement("target").addAttribute("ref","loc_id"+transition.getTargetId());
+		    	tran.addAttribute("id", "tran_id"+transition.getSourceId()+transition.getTargetId());
 		    	tran.addAttribute("T1", transition.getT1());
 		    	tran.addAttribute("T2", transition.getT2());
 				tran.addAttribute("DCBM", transition.getDCBM());

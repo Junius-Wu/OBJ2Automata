@@ -2,8 +2,10 @@ package uml;
 
 public class UppaalTransition 
 {
-	int sourceId;
-	int targetId;
+	String sourceId;
+	String targetId;
+	int sourceIdForUPPAAL;
+	int tatgetIdForUPPAAL;
 	int id;
 	String Kind = "synchronisation";
 	String nameText;
@@ -11,11 +13,12 @@ public class UppaalTransition
 	String nameS="null";
 	String T1 = "0";
 	String T2 = "0";
-	String SEQDC;
-	String SEQDO;
-	String SEQTC;
-	String SEQTO;
-	String DCBM;
+	String SEQDC="null";//1 消息上的时间约束
+	String DCBM="null";//2 状态上的时间约束
+	String SEQDO="null";//3
+	String SEQTC="null";//4
+	String SEQTO="null";//5
+	
 	public String getSEQDC() {
 		return SEQDC;
 	}
@@ -66,19 +69,19 @@ public class UppaalTransition
 	{
 		this.id=id;
 	}
-	public int getSourceId() 
+	public String getSourceId() 
 	{
 		return sourceId;
 	}
-	public void setSourceId(int sourceId) 
+	public void setSourceId(String sourceId) 
 	{
 		this.sourceId = sourceId;
 	}
-	public int getTargetId() 
+	public String getTargetId() 
 	{
 		return targetId;
 	}
-	public void setTargetId(int targetId) 
+	public void setTargetId(String targetId) 
 	{
 		this.targetId = targetId;
 	}

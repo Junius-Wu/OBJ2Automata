@@ -1,18 +1,26 @@
 package uml;
 
 public class UppaalLocation {
-	Boolean init=false;
-	Boolean fnal=false;
-	String Name="null";
-	int id;
+	Boolean init=false; //初始状态
+	Boolean fnal=false; //结束状态
+	String Name="null"; //名称
+	String id;
 	int Type=0;   //0为正常 1为紧迫
-	String lineEAID="null";
-	String Invariant="null";
+//	String lineEAID="null";
+//	String Invariant="null";
 	String R1 = "0";
 	String R2 = "0";
 	String Energe = "0";
 	String ObjId = "NULL";
 	String ObjName = "";
+	String timeDuration;
+	
+	public String getTimeDuration() {
+		return timeDuration;
+	}
+	public void setTimeDuration(String timeDuration) {
+		this.timeDuration = timeDuration;
+	}
 	public Boolean getInit() {
 		return init;
 	}
@@ -31,10 +39,10 @@ public class UppaalLocation {
 	public void setName(String name) {
 		Name = name;
 	}
-	public int getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public int getType() {
@@ -43,18 +51,18 @@ public class UppaalLocation {
 	public void setType(int type) {
 		Type = type;
 	}
-	public String getLineEAID() {
-		return lineEAID;
-	}
-	public void setLineEAID(String lineEAID) {
-		this.lineEAID = lineEAID;
-	}
-	public String getInvariant() {
-		return Invariant;
-	}
-	public void setInvariant(String invariant) {
-		Invariant = invariant;
-	}
+//	public String getLineEAID() {
+//		return lineEAID;
+//	}
+//	public void setLineEAID(String lineEAID) {
+//		this.lineEAID = lineEAID;
+//	}
+//	public String getInvariant() {
+//		return Invariant;
+//	}
+//	public void setInvariant(String invariant) {
+//		Invariant = invariant;
+//	}
 	public String getR1() {
 		return R1;
 	}
